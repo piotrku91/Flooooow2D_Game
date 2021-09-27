@@ -1,0 +1,21 @@
+{
+
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "make -j -C ${workspaceFolder}/build/",
+            "args": [
+             
+            ],
+            "group": "build",
+            "presentation": {
+                // Reveal the output only if unrecognized errors occur.
+                "reveal": "always"
+            },
+         
+        }
+    ]
+}
