@@ -20,13 +20,13 @@ protected:
      //  std::cout << "object " << ",l " << target.Sprite_.getGlobalBounds().left << ",t " << target.Sprite_.getGlobalBounds().top << ",w " << target.Sprite_.getGlobalBounds().width << ",h " << target.Sprite_.getGlobalBounds().height << "\n"; 
   
         if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left,target.Sprite_.getGlobalBounds().top-2,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {
-           std::cout << "kolizja\n";
+          // std::cout << "kolizja\n";
            return true;};
         return false;
     };
 
     bool testCollisionTop(Collid& target) {
-           if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left,target.Sprite_.getGlobalBounds().top,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {
+           if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left,target.Sprite_.getGlobalBounds().top+1,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {
       return true;};
       
         return false;
@@ -35,13 +35,13 @@ protected:
     bool testCollisionLeft(Collid& target) {
     /*    std::cout << "player " << ",l " << Sprite_.getGlobalBounds().left << ",t " << Sprite_.getGlobalBounds().top << ",w " << Sprite_.getGlobalBounds().width << ",h " << Sprite_.getGlobalBounds().height << "\n";
        std::cout << "object " << ",l " << target.Sprite_.getGlobalBounds().left << ",t " << target.Sprite_.getGlobalBounds().top << ",w " << target.Sprite_.getGlobalBounds().width << ",h " << target.Sprite_.getGlobalBounds().height << "\n"; */
-        if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left+15,target.Sprite_.getGlobalBounds().top+5,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {return true;};
+        if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left+5,target.Sprite_.getGlobalBounds().top+5,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {return true;};
         return false;
     };
 
     bool testCollisionRight(Collid& target) {
        
-      if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left-15,target.Sprite_.getGlobalBounds().top+5,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {return true;};
+      if  (Sprite_.getGlobalBounds().intersects(sf::FloatRect(target.Sprite_.getGlobalBounds().left-5,target.Sprite_.getGlobalBounds().top+5,target.Sprite_.getGlobalBounds().width,target.Sprite_.getGlobalBounds().height))) {return true;};
 
         return false;
     };

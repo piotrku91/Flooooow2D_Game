@@ -3,7 +3,9 @@
 #include <iostream>
 #include <memory>
 #include "Platform.hpp"
+#include "Body.hpp"
 #include "Player.hpp"
+#include "Box.hpp"
 #include "TextureNet.hpp"
 
 extern void winInit();
@@ -12,28 +14,36 @@ sf::RenderWindow Window;
 
 std::map<std::string, TextureNet> TexturesDatabase =
     {
-        {"ground", TextureNet("jeden.jpg", 200, 200, 800, 800)}};
+        {"ground", TextureNet("jeden.jpg", 200, 200, 800, 800)}
+    };
 
 int main() {
     /////////////////////////////////////////////////// WINDOW INIT ////////////////////////////////////////////
     winInit();
     int dX = 0, dY = 0;
 
-
-
     std::vector<Platform> Platforms;
     Platforms.emplace_back(100, 500, 400, 100, TexturesDatabase["ground"]);
     Platforms.emplace_back(400, 300, 400, 300, TexturesDatabase["ground"]);
 
-    std::vector<std::shared_ptr<Body>> Objects;
-    Objects.push_back(std::make_shared<Player>(Player(*TexturesDatabase["ground"].getTexture(1, 0),400,400,30,30)));
-    Objects.push_back(std::make_shared<Box>(Box(*TexturesDatabase["ground"].getTexture(1, 0),200,100,80,80)));
-    //Player pl(*TexturesDatabase["ground"].getTexture(1, 0),400,400,30,30);
-  //  Box box(*TexturesDatabase["ground"].getTexture(1, 3),200,100,80,80);;
+    std::shared_ptr<Body> Player_(std::make_shared<Player>(Player(*TexturesDatabase["ground"].getTexture(1, 0), 400, 400, 30, 30)));
 
+    std::vector<std::shared_ptr<Body>> Objects;
+    Objects.push_back(std::make_shared<Box>(Box(*TexturesDatabase["ground"].getTexture(1, 0), 260, 100, 50, 50)));
+    Objects.push_back(std::make_shared<Box>(Box(*TexturesDatabase["ground"].getTexture(1, 0), 150, 100, 50, 50)));
+    Objects.push_back(std::make_shared<Box>(Box(*TexturesDatabase["ground"].getTexture(1, 0), 450, 100, 50, 50)));
+    Objects.push_back(std::make_shared<Box>(Box(*TexturesDatabase["ground"].getTexture(1, 0), 450, 2, 50, 50)));
 
     sf::Event Event;
-  
+
+          auto checkCollisions = [&]() { // Collision checker lambda expr
+            for (auto& Platform : Platforms) {
+                Player_->PlatformCollisionTest(Platform);
+                for (auto& Object : Objects) {
+                    Object->PlatformCollisionTest(Platform);
+                };
+            };
+        };
 
     /////////////////////////////////////////////////// MAIN LOOP ////////////////////////////////////////////
     while (Window.isOpen()) {
@@ -55,36 +65,36 @@ int main() {
         };
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            dY=-30;
+            dY = -30;
         };
 
-        
-        auto checkCollisions = [&](){
-            for (auto& Platform : Platforms) {
-                for (auto& Object: Objects) {
-            Object->PlatformCollisionTest(Platform);
-                };
-            };
-        };
+         if (sf::Keyboard::isKeyPressed(sf::Keyboard::C)) {
+            Player_->Catch=true;
+        } else { Player_->Catch=false;}
 
-        checkCollisions(); // Check collisions for gravity and player moves
+  
 
+        checkCollisions();  // Check collisions for gravity and player moves
 
-        Objects[1]->tryMove(0,0); // do Gravity
-        Objects.front()->tryMove(dX,dY); // move player
- 
+        for (auto& Object : Objects) {
+            Object->tryMove(0, 0);
+        };                         // do Gravity for all Objects loop
 
-       
-        Objects[1]->Interaction(checkCollisions, *Objects[0]); // Check interactions
-       
-        
-        
-       
-        
-       
+        Player_->tryMove(dX, dY);  // move player and gravity
+
+        for (auto& Object : Objects) {
+            Object->Interaction(checkCollisions, Player_);
+            for (auto& ObjectX : Objects) {
+            Object->Interaction(checkCollisions, ObjectX);
+            }
+        };  // Check interactions loop;
+
         Window.clear();
         std::for_each(Platforms.begin(), Platforms.end(), [](auto& p) { p.goDraw(Window); });
-        for (auto& Object : Objects) {Window.draw(Object->getSprite());};
+        for (auto& Object : Objects) {
+            Window.draw(Object->getSprite());
+        };
+        Window.draw(Player_->getSprite());
         Window.display();
     }
 }
